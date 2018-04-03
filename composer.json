@@ -17,16 +17,16 @@
   },
   "autoload": {
     "psr-4": {
-      "nateritter\\binance\\": "src/"
+      "Nateritter\\Binance\\": "src/"
     }
   },
   "extra": {
     "laravel": {
         "providers": [
-            "nateritter\\binance\\BinanceServiceProvider"
+            "Nateritter\\Binance\\BinanceServiceProvider"
         ],
         "aliases": {
-            "Binance": "nateritter\\binance\\BinanceAPIFacade"
+            "Binance": "Nateritter\\Binance\\BinanceAPIFacade"
         }
     }
 }
