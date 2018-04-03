@@ -1,13 +1,13 @@
 {
-    "name": "adman9000/laravel-binance",
-    "description": "Implementation of Binance trading API for Laravel",
+    "name": "nateritter/laravel-binance",
+    "description": "Implementation of Binance trading API for Laravel. Credit to @adman9000",
 	  "tags": ["binance", "api", "laravel"],
 	  "type": "library",
 	  "license": "MIT",
 	  "authors": [
 		{
-		  "name": "Adam Harding",
-		  "email": "myaddressistaken@googlemail.com"
+		  "name": "Nate Ritter",
+		  "email": "nate@perfectspace.com.com"
 		}
 	  ],
    "require": {
@@ -17,16 +17,16 @@
   },
   "autoload": {
     "psr-4": {
-      "adman9000\\binance\\": "src/"
+      "nateritter\\binance\\": "src/"
     }
   },
   "extra": {
     "laravel": {
         "providers": [
-            "adman9000\\binance\\BinanceServiceProvider"
+            "nateritter\\binance\\BinanceServiceProvider"
         ],
         "aliases": {
-            "Binance": "adman9000\\binance\\BinanceAPIFacade"
+            "Binance": "nateritter\\binance\\BinanceAPIFacade"
         }
     }
 }
