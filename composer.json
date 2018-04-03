@@ -1,6 +1,6 @@
 {
-    "name": "nateritter/laravel-binance",
-    "description": "Implementation of Binance trading API for Laravel. Credit to @adman9000",
+    "name": "nateritter/laravel-binance-wrapper",
+    "description": "Implementation of Binance trading API for Laravel. Credit to @adman9000 for starting point.",
 	  "tags": ["binance", "api", "laravel"],
 	  "type": "library",
 	  "license": "MIT",
