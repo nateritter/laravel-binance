@@ -1,4 +1,4 @@
-<?php namespace adman9000\binance;
+<?php namespace nateritter\binance;
 
 use Illuminate\Support\Facades\Facade;
 

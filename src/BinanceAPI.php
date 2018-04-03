@@ -1,5 +1,5 @@
 <?php
-namespace adman9000\binance;
+namespace nateritter\binance;
 
 class BinanceAPI
 {
