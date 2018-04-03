@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace adman9000\binance;
 
 class BinanceAPI
@@ -31,7 +31,7 @@ class BinanceAPI
         ];
 
         curl_setopt_array($this->curl, $curl_options);
-        
+
     }
 
     /**
@@ -61,7 +61,7 @@ class BinanceAPI
     * getTicker
     * getCurrencies
     * getMarkets
-    *
+    * getKlines
     *
     *
     *
@@ -110,6 +110,21 @@ class BinanceAPI
     {
         $return = $this->request('v1/exchangeInfo');
         return $return['symbols'];
+    }
+
+    /**
+     * Kline/candlestick bars for a symbol and interval.
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getKlines($symbol, $interval, $limit = 500)
+    {
+        $data = [
+            'symbol' => $symbol,
+            'interval' => $interval,
+            'limit' => $limit
+        ];
+        return $this->request('v1/klines', $data);
     }
 
 
@@ -205,7 +220,7 @@ class BinanceAPI
         }
 
         $b = $this->privateRequest('v3/order', $data, 'POST');
-    
+
         return $b;
     }
 
@@ -332,7 +347,7 @@ class BinanceAPI
 
         // make request
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
-   
+
 
          // build the POST data string
         $postdata = $params;
