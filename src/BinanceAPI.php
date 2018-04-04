@@ -31,7 +31,6 @@ class BinanceAPI
         ];
 
         curl_setopt_array($this->curl, $curl_options);
-
     }
 
     /**
@@ -149,10 +148,8 @@ class BinanceAPI
      * @throws \Exception
      */
     public function getBalances() {
-
         $b = $this->privateRequest('v3/account');
         return $b['balances'];
-
     }
 
     /**
@@ -169,30 +166,23 @@ class BinanceAPI
             'symbol' => $symbol,
             'limit'  => $limit,
         ];
-
         $b = $this->privateRequest('v3/myTrades', $data);
         return $b;
-
     }
 
     public function getOpenOrders()
     {
-
-
         $b = $this->privateRequest('v3/openOrders');
         return $b;
-
     }
 
     public function getAllOrders($symbol)
     {
-
         $data = [
             'symbol' => $symbol
         ];
         $b = $this->privateRequest('v3/allOrders', $data);
         return $b;
-
     }
 
     /**
@@ -294,27 +284,31 @@ class BinanceAPI
      */
     private function request($url, $params = [], $method = 'GET')
     {
+
+        // Add post vars
+        if ($method == 'POST') {
+            curl_setopt($this->curl, CURLOPT_POST, count($params));
+            curl_setopt($this->curl, CURLOPT_POSTFIELDS, $params);
+        } else {
+            $url = $url . '?' . http_build_query($params);
+        }
+
         // Set URL & Header
         curl_setopt($this->curl, CURLOPT_URL, $this->url . $url);
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, array());
 
-        //Add post vars
-        if($method == 'POST')
-        {
-            curl_setopt($this->curl, CURLOPT_POST, count($params));
-            curl_setopt($this->curl, CURLOPT_POSTFIELDS, $params);
+        // Get result
+        $result = curl_exec($this->curl);
+        if ($result === false) {
+            throw new \Exception('CURL error: ' . curl_error($this->curl));
         }
 
-        //Get result
-        $result = curl_exec($this->curl);
-        if($result === false)
-            throw new \Exception('CURL error: ' . curl_error($this->curl));
-
-        // decode results
+        // Decode results
         $result = json_decode($result, true);
 
-        if(!is_array($result) || json_last_error())
+        if (!is_array($result) || json_last_error()) {
             throw new \Exception('JSON decode error');
+        }
 
         return $result;
 
@@ -331,46 +325,45 @@ class BinanceAPI
      */
     private function privateRequest($url, $params = [], $method = 'GET')
     {
-        // build the POST data string
+        // Build the POST data string
         $params['timestamp']  = number_format((microtime(true) * 1000), 0, '.', '');
         $params['recvWindow'] = $this->recvWindow;
 
-
         $query   = http_build_query($params, '', '&');
 
-        // set API key and sign the message
+        // Set API key and sign the message
         $sign    = hash_hmac('sha256', $query, $this->secret);
 
         $headers = array(
             'X-MBX-APIKEY: ' . $this->key
         );
 
-        // make request
+        // Make request
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
 
-
-         // build the POST data string
+        // Build the POST data string
         $postdata = $params;
-
 
         // Set URL & Header
         curl_setopt($this->curl, CURLOPT_URL, $this->url . $url."?{$query}&signature={$sign}");
 
-        //Add post vars
-        if($method == "POST") {
+        // Add post vars
+        if ($method == "POST") {
             curl_setopt($this->curl,CURLOPT_POST, 1);
             curl_setopt($this->curl, CURLOPT_POSTFIELDS, array());
         }
 
-        //Get result
+        // Get result
         $result = curl_exec($this->curl);
-        if($result === false)
+        if ($result === false) {
             throw new \Exception('CURL error: ' . curl_error($this->curl));
+        }
 
-         // decode results
+        // Decode results
         $result = json_decode($result, true);
-        if(!is_array($result) || json_last_error())
+        if (!is_array($result) || json_last_error()) {
             throw new \Exception('JSON decode error');
+        }
 
         return $result;
 
