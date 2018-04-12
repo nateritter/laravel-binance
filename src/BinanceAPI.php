@@ -197,10 +197,11 @@ class BinanceAPI
      * @param string $side     BUY, SELL
      * @param string $type     MARKET, LIMIT, STOP_LOSS, STOP_LOSS_LIMIT, TAKE_PROFIT, TAKE_PROFIT_LIMIT, LIMIT_MAKER
      * @param bool $price      Limit price
+     * @param bool $test       Test trade
      * @return mixed
      * @throws \Exception
      */
-    public function trade($symbol, $quantity, $side, $type = 'MARKET', $price = false)
+    public function trade($symbol, $quantity, $side, $type = 'MARKET', $price = false, $test = false)
     {
         $data = [
             'symbol'   => $symbol,
@@ -208,12 +209,14 @@ class BinanceAPI
             'type'     => $type,
             'quantity' => $quantity
         ];
-        if($price !== false)
-        {
+
+        if ($price !== false) {
             $data['price'] = $price;
         }
 
-        $b = $this->privateRequest('v3/order', $data, 'POST');
+        $uri = ($test) ? 'v3/order/test' : 'v3/order';
+
+        $b = $this->privateRequest($uri, $data, 'POST');
 
         return $b;
     }
@@ -223,12 +226,13 @@ class BinanceAPI
      *
      * @param string $symbol   Asset pair to trade
      * @param string $quantity Amount of trade asset
+     * @param bool   $test     Test trade
      * @return mixed
      * @throws \Exception
      */
-    public function marketSell($symbol, $quantity)
+    public function marketSell($symbol, $quantity, $test = false)
     {
-        return $this->trade($symbol, $quantity, 'SELL', 'MARKET');
+        return $this->trade($symbol, $quantity, 'SELL', 'MARKET', false, $test);
     }
 
     /**
@@ -236,12 +240,13 @@ class BinanceAPI
      *
      * @param string $symbol   Asset pair to trade
      * @param string $quantity Amount of trade asset
+     * @param bool   $test     Test trade
      * @return mixed
      * @throws \Exception
      */
-    public function marketBuy($symbol, $quantity)
+    public function marketBuy($symbol, $quantity, $test = false)
     {
-        return $this->trade($symbol, $quantity, 'BUY', 'MARKET');
+        return $this->trade($symbol, $quantity, 'BUY', 'MARKET', false, $test);
     }
 
     /**
@@ -249,13 +254,14 @@ class BinanceAPI
      *
      * @param string $symbol   Asset pair to trade
      * @param string $quantity Amount of trade asset
-     * @param float $price     Limit price to sell
+     * @param float  $price    Limit price to sell
+     * @param bool   $test     Test trade
      * @return mixed
      * @throws \Exception
      */
-    public function limitSell($symbol, $quantity, $price)
+    public function limitSell($symbol, $quantity, $price, $test = false)
     {
-        return $this->trade($symbol, $quantity, 'SELL', 'LIMIT', $price);
+        return $this->trade($symbol, $quantity, 'SELL', 'LIMIT', $price, $test);
     }
 
     /**
@@ -263,13 +269,14 @@ class BinanceAPI
      *
      * @param string $symbol   Asset pair to trade
      * @param string $quantity Amount of trade asset
-     * @param float $price     Limit price to buy
+     * @param float  $price    Limit price to buy
+     * @param bool   $test     Test trade
      * @return mixed
      * @throws \Exception
      */
-    public function limitBuy($symbol, $quantity, $price)
+    public function limitBuy($symbol, $quantity, $price, $test = false)
     {
-        return $this->trade($symbol, $quantity, 'BUY', 'LIMIT', $price);
+        return $this->trade($symbol, $quantity, 'BUY', 'LIMIT', $price, $test);
     }
 
 
