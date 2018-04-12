@@ -174,18 +174,43 @@ class BinanceAPI
         return $b;
     }
 
+    /**
+     * Get all open orders
+     * @return mixed
+     */
     public function getOpenOrders()
     {
         $b = $this->privateRequest('v3/openOrders');
         return $b;
     }
 
+    /**
+     * Get all orders
+     * @param  string $symbol
+     * @return mixed
+     */
     public function getAllOrders($symbol)
     {
         $data = [
             'symbol' => $symbol
         ];
         $b = $this->privateRequest('v3/allOrders', $data);
+        return $b;
+    }
+
+    /**
+     * Get single order details
+     * @param  string $symbol
+     * @param  string $orderId
+     * @return mixed
+     */
+    public function getOrder($symbol, $orderId)
+    {
+        $data = [
+            'symbol' => $symbol,
+            'orderId' => $orderId
+        ];
+        $b = $this->privateRequest('v3/order', $data);
         return $b;
     }
 
@@ -204,10 +229,11 @@ class BinanceAPI
     public function trade($symbol, $quantity, $side, $type = 'MARKET', $price = false, $test = false)
     {
         $data = [
-            'symbol'   => $symbol,
-            'side'     => $side,
-            'type'     => $type,
-            'quantity' => $quantity
+            'symbol'           => $symbol,
+            'side'             => $side,
+            'type'             => $type,
+            'quantity'         => $quantity,
+            'newOrderRespType' => 'FULL',
         ];
 
         if ($price !== false) {
