@@ -1,6 +1,8 @@
 <?php
 namespace Nateritter\Binance;
 
+use Log;
+
 class BinanceAPI
 {
     protected $key;         // API key
@@ -153,6 +155,14 @@ class BinanceAPI
      */
     public function getBalances() {
         $b = $this->privateRequest('v3/account');
+
+        if (!isset ($b['balances'])) {
+            Log::info([
+                'command' => 'Binance::getBalances()',
+                'b' => $b,
+            ]);
+        }
+
         return $b['balances'];
     }
 
