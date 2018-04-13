@@ -373,7 +373,7 @@ class BinanceAPI
     private function privateRequest($url, $params = [], $method = 'GET')
     {
         // Build the POST data string
-        $params['timestamp']  = number_format((microtime(true) * 10000), 0, '.', '');
+        $params['timestamp']  = number_format((microtime(true) * 1000), 0, '.', '');
         $params['recvWindow'] = $this->recvWindow;
 
         $query   = http_build_query($params, '', '&');
