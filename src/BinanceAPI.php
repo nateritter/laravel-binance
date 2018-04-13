@@ -156,12 +156,12 @@ class BinanceAPI
     public function getBalances() {
         $b = $this->privateRequest('v3/account');
 
-        if (!isset ($b['balances'])) {
-            Log::info([
-                'command' => 'Binance::getBalances()',
-                'b' => $b,
-            ]);
-        }
+        // if (!isset ($b['balances'])) {
+        //     Log::info([
+        //         'command' => 'Binance::getBalances()',
+        //         'b' => $b,
+        //     ]);
+        // }
 
         return $b['balances'];
     }
