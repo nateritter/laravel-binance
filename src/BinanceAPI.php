@@ -14,17 +14,22 @@ class BinanceAPI
 
     /**
      * Constructor for BinanceAPI
+     * @param string  $key     API key
+     * @param string  $secret  API secret
+     * @param string  $api_url API base URL (see config for example)
+     * @param integer $timing  Biance API timing setting (default 10000)
+     * @param bool    $ssl     Verify Binance API SSL peer
      */
-    function __construct()
+    function __construct($key = null, $secret = null, $api_url = null, $timing = 10000, $ssl = true)
     {
-        $this->key        = config('binance.auth.key');
-        $this->secret     = config('binance.auth.secret');
-        $this->url        = config('binance.urls.api');
-        $this->recvWindow = config('binance.settings.timing');
+        $this->key        = (! empty($key)) ? $key : config('binance.auth.key');
+        $this->secret     = (! empty($secret)) ? $secret : config('binance.auth.secret');
+        $this->url        = (! empty($api_url)) ? $api_url : config('binance.urls.api');
+        $this->recvWindow = (! empty($timing)) ? $timing : config('binance.settings.timing');
         $this->curl       = curl_init();
 
         $curl_options     = [
-            CURLOPT_SSL_VERIFYPEER => config('binance.settings.ssl'),
+            CURLOPT_SSL_VERIFYPEER => (isset($ssl) && $ssl !== null) ? $ssl : $config('binance.settings.ssl'),
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_USERAGENT      => 'Binance PHP API Agent',
             CURLOPT_RETURNTRANSFER => true,
@@ -61,13 +66,8 @@ class BinanceAPI
     /*
     * getTicker
     * getPrice
-    * getCurrencies
     * getMarkets
     * getKlines
-    *
-    *
-    *
-    *
     */
 
     /**
@@ -97,12 +97,6 @@ class BinanceAPI
             'symbol' => $symbol
         ];
         return $this->request('v3/ticker/price', $data);
-    }
-
-    public function getCurrencies()
-    {
-       //Seems to be no such functionality
-       return false;
     }
 
     /**
