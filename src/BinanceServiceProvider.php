@@ -16,7 +16,7 @@ class BinanceServiceProvider extends ServiceProvider {
 	{
 		$this->mergeConfigFrom(__DIR__.'/../config/binance.php', 'binance');
 		$this->app->bind('binance', function() {
-			return new BinanceAPI(config('binance'));
+			return new BinanceAPI();
 		});
 	} // register
 }
