@@ -150,12 +150,18 @@ class BinanceAPI
     public function getBalances() {
         $b = $this->privateRequest('v3/account');
 
-        // if (!isset ($b['balances'])) {
-        //     Log::info([
-        //         'command' => 'Binance::getBalances()',
-        //         'b' => $b,
-        //     ]);
-        // }
+        if (!isset ($b['balances'])) {
+            Log::info([
+                'command' => 'Binance::getBalances()',
+                'error' => 'Undefined index: balances',
+                'b' => $b,
+            ]);
+
+            // Wait and try again
+            sleep(3);
+
+            return self::getBalances();
+        }
 
         return $b['balances'];
     }
