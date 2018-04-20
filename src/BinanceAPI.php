@@ -358,6 +358,30 @@ class BinanceAPI
     }
 
     /**
+     * Set the time difference between Binance and system clock
+     * @return integer
+     */
+    private function syncClock()
+    {
+        $response = $this->request('v1/time');
+        $after = $this->milliseconds();
+        $this->timeDifference = intval ($after - $response['serverTime']);
+
+        return $this->timeDifference;
+    }
+
+    /**
+     * Get the milliseconds from the system clock
+     * @return integer
+     */
+    private function milliseconds()
+    {
+        list ($msec, $sec) = explode (' ', microtime ());
+
+        return $sec . substr ($msec, 2, 3);
+    }
+
+    /**
      * Make private requests (Security Type: TRADE, USER_DATA, USER_STREAM, MARKET_DATA)
      *
      * @param string $url    URL Endpoint
@@ -368,6 +392,8 @@ class BinanceAPI
      */
     private function privateRequest($url, $params = [], $method = 'GET')
     {
+        $this->syncClock();
+
         // Build the POST data string
         $params['timestamp']  = number_format((microtime(true) * 1000), 0, '.', '') + $this->timeDifference;
         $params['recvWindow'] = $this->recvWindow;
