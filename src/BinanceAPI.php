@@ -11,6 +11,7 @@ class BinanceAPI
     protected $recvWindow;  // API base URL
     protected $version;     // API version
     protected $curl;        // curl handle
+    protected $timeDifference = 0; // the difference between system clock and Binance clock
 
     /**
      * Constructor for BinanceAPI
@@ -60,7 +61,6 @@ class BinanceAPI
        $this->key    = $key;
        $this->secret = $secret;
     }
-
 
     //------ PUBLIC API CALLS --------
     /*
@@ -158,14 +158,6 @@ class BinanceAPI
                 'error' => 'Undefined index: balances',
                 'b' => $b,
             ]);
-
-            // Wait and try again a few times
-            if ($iterator <= $max) {
-                sleep(1);
-                $iterator++;
-
-                return self::getBalances($iterator);
-            }
         }
 
         return $b['balances'];
@@ -336,7 +328,6 @@ class BinanceAPI
      */
     private function request($url, $params = [], $method = 'GET')
     {
-
         // Add post vars
         if ($method == 'POST') {
             curl_setopt($this->curl, CURLOPT_POST, count($params));
@@ -378,7 +369,7 @@ class BinanceAPI
     private function privateRequest($url, $params = [], $method = 'GET')
     {
         // Build the POST data string
-        $params['timestamp']  = number_format((microtime(true) * 1000), 0, '.', '');
+        $params['timestamp']  = number_format((microtime(true) * 1000), 0, '.', '') + $this->timeDifference;
         $params['recvWindow'] = $this->recvWindow;
 
         $query   = http_build_query($params, '', '&');
@@ -418,7 +409,6 @@ class BinanceAPI
         }
 
         return $result;
-
     }
 
 }
