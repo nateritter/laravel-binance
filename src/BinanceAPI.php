@@ -395,7 +395,7 @@ class BinanceAPI
         $this->syncClock();
 
         // Build the POST data string
-        $params['timestamp']  = number_format((microtime(true) * 1000), 0, '.', '') + $this->timeDifference;
+        $params['timestamp']  = $this->milliseconds() + $this->timeDifference;
         $params['recvWindow'] = $this->recvWindow;
 
         $query   = http_build_query($params, '', '&');
