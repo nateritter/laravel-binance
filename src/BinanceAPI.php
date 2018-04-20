@@ -328,6 +328,12 @@ class BinanceAPI
      */
     private function request($url, $params = [], $method = 'GET')
     {
+        $this->syncClock();
+
+        // Build the POST data string
+        $params['timestamp']  = $this->milliseconds() + $this->timeDifference;
+        $params['recvWindow'] = $this->recvWindow;
+
         // Add post vars
         if ($method == 'POST') {
             curl_setopt($this->curl, CURLOPT_POST, count($params));
