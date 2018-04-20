@@ -144,10 +144,12 @@ class BinanceAPI
     /**
      * Get current account information
      *
+     * @param  integer $iterator Number of times we've tried to get balances.
+     * @param  integer $max      Max times to retry the call.
      * @return mixed
      * @throws \Exception
      */
-    public function getBalances() {
+    public function getBalances($iterator = 1, $max = 3) {
         $b = $this->privateRequest('v3/account');
 
         if (!isset ($b['balances'])) {
@@ -157,10 +159,13 @@ class BinanceAPI
                 'b' => $b,
             ]);
 
-            // Wait and try again
-            sleep(3);
+            // Wait and try again a few times
+            if ($iterator <= $max) {
+                sleep(1);
+                $iterator++;
 
-            return self::getBalances();
+                return self::getBalances($iterator);
+            }
         }
 
         return $b['balances'];
