@@ -12,6 +12,7 @@ class BinanceAPI
     protected $version;     // API version
     protected $curl;        // curl handle
     protected $timeDifference = 0; // the difference between system clock and Binance clock
+    protected $synced = false;
 
     /**
      * Constructor for BinanceAPI
@@ -328,11 +329,13 @@ class BinanceAPI
      */
     private function request($url, $params = [], $method = 'GET')
     {
-        $this->syncClock();
-
         // Build the POST data string
-        $params['timestamp']  = $this->milliseconds() + $this->timeDifference;
-        $params['recvWindow'] = $this->recvWindow;
+        if ($url !== 'v1/time') {
+            $this->syncClock();
+
+            $params['timestamp']  = $this->milliseconds() + $this->timeDifference;
+            $params['recvWindow'] = $this->recvWindow;
+        }
 
         // Add post vars
         if ($method == 'POST') {
@@ -369,9 +372,14 @@ class BinanceAPI
      */
     private function syncClock()
     {
+        if ($this->synced) {
+            return $this->timeDifference;
+        }
+
         $response = $this->request('v1/time');
         $after = $this->milliseconds();
         $this->timeDifference = intval ($after - $response['serverTime']);
+        $this->synced = true;
 
         return $this->timeDifference;
     }
@@ -398,11 +406,15 @@ class BinanceAPI
      */
     private function privateRequest($url, $params = [], $method = 'GET')
     {
-        $this->syncClock();
+        if ($this->synced === false) {
+            $this->syncClock();
+        }
 
         // Build the POST data string
-        $params['timestamp']  = $this->milliseconds() + $this->timeDifference;
-        $params['recvWindow'] = $this->recvWindow;
+        if ($url !== 'v1/time') {
+            $params['timestamp']  = $this->milliseconds() + $this->timeDifference;
+            $params['recvWindow'] = $this->recvWindow;
+        }
 
         $query   = http_build_query($params, '', '&');
 
