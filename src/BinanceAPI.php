@@ -412,7 +412,7 @@ class BinanceAPI
 
         // Build the POST data string
         if ($url !== 'v1/time') {
-            $params['timestamp']  = $this->milliseconds() + $this->timeDifference;
+            $params['timestamp']  = $this->milliseconds() - $this->timeDifference;
             $params['recvWindow'] = $this->recvWindow;
         }
 
