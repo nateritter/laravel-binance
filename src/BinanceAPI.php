@@ -333,7 +333,7 @@ class BinanceAPI
         if ($url !== 'v1/time') {
             $this->syncClock();
 
-            $params['timestamp']  = $this->milliseconds() + $this->timeDifference;
+            $params['timestamp']  = $this->milliseconds() - $this->timeDifference;
             $params['recvWindow'] = $this->recvWindow;
         }
 
