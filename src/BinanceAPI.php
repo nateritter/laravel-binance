@@ -13,6 +13,21 @@ class BinanceAPI
     protected $curl;        // curl handle
     protected $timeDifference = 0; // the difference between system clock and Binance clock
     protected $synced = false;
+    protected $no_time_needed = [
+        'v3/ticker/price',
+        'v1/time',
+        'v1/ping',
+        'v1/exchangeInfo',
+        'v1/depth',
+        'v1/trades',
+        'v1/historicalTrades',
+        'v1/aggTrades',
+        'v1/klines',
+        'v1/ticker/24hr',
+        'v3/ticker/price',
+        'v3/ticker/bookTicker',
+        'v1/userDataStream',
+    ];
 
     /**
      * Constructor for BinanceAPI
@@ -330,7 +345,7 @@ class BinanceAPI
     private function request($url, $params = [], $method = 'GET')
     {
         // Build the POST data string
-        if ($url !== 'v1/time') {
+        if (! in_array($url, $this->no_time_needed)) {
             $this->syncClock();
 
             $params['timestamp']  = $this->milliseconds() - $this->timeDifference;
@@ -411,7 +426,7 @@ class BinanceAPI
         }
 
         // Build the POST data string
-        if ($url !== 'v1/time') {
+        if (! in_array($url, $this->no_time_needed)) {
             $params['timestamp']  = $this->milliseconds() - $this->timeDifference;
             $params['recvWindow'] = $this->recvWindow;
         }
